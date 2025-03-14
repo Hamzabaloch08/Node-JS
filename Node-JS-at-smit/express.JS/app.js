@@ -1,15 +1,16 @@
 import express from 'express'
 
 const app = express();
-const port = 200
 
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
     res.send(`Hello world! ${new Date()}`)
 })
-app.get('/login',(req,res)=>{
+
+app.get('/login', (req, res) => {
     res.send('Hi Login your account!')
 })
 
-app.listen(port,()=>{
-    console.log(`Example app listening on port ${port}...!`)
+const PORT = process.env.PORT || 3000
+app.listen(PORT, () => {
+    console.log(`Example server listening on port ${PORT}...!`)
 })
