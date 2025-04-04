@@ -6,7 +6,6 @@ const PORT = 3000;
 
 app.use(cors());
 
-
 const weatherData = {
     karachi: {
         status: "success",
@@ -25,7 +24,6 @@ const weatherData = {
             air_quality: "Good"
         }
     },
-
     london: {
         status: "success",
         message: "Weather data for London",
@@ -43,7 +41,6 @@ const weatherData = {
             air_quality: "Good"
         }
     },
-
     islamabad: {
         status: "success",
         message: "Weather data for Islamabad",
