@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>comment app</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body style="background-color: bisque;">
+
+    <div>
+        <h1>Add Comments</h1>
+        <form id="postCommentForm">
+            <input id="nameInput" type="text" placeholder="Enter name...">
+            <input id="commentInput" type="text" placeholder="Enter your Comment">
+            <button type="submit">Post</button>
+        </form>
+    </div>
+    <div id="comments" style="margin-top: 50px;">
+        <div style="border: 1px solid black; width: 40%; margin-top: 10px;">
+            <h1>Hamza</h1>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos ratione maxime fugit enim consequatur
+                tempora dolores debitis consectetur voluptate veniam, delectus ipsa.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('#postCommentForm').addEventListener("submit", async (e) => {
+            e.preventDefault()
+
+            const nameInput = document.querySelector('#nameInput').value;
+            const commentInput = document.querySelector('#commentInput').value;
+
+            try {
+                const axiosResponse = await axios.post(`/comment/${nameInput}`, {
+                    comment: commentInput
+                })
+
+                console.log(axiosResponse.data)
+                getAllComments();
+            } catch (error) {
+                console.log(error)
+            }
+        })
+
+        const getAllComments = async () => {
+            try {
+                const axiosResponse = await axios.get('/comments');
+                console.log(axiosResponse.data)
+                const commentsData = axiosResponse.data.data;
+
+                const commentsContainer = document.querySelector('#comments');
+
+                commentsData.map(comment => {
+                    commentsContainer.innerHTML += `
+                <div style="border: 1px solid black; width: 40%; margin-top: 10px;">
+                    <h1>${comment.name}</h1>
+                    <p>${comment.comment}</p>
+                </div>`;
+                });
+            } catch (error) {
+                console.error("Error fetching comments:", error);
+            }
+        };
+    </script>
+</body>
+
+</html>
