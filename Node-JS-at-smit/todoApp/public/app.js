@@ -94,7 +94,6 @@ const clearAllTodo = async () => {
     }
 }
 
-
 clearAllButton.addEventListener('click', clearAllTodo)
 addButton.addEventListener('click', postTodo);
 
