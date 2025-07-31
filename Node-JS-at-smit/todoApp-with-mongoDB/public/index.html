@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App UI</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <div class="todo-app">
+        <h2>My To-Do List</h2>
+        <div class="input-group">
+            <input id="input" type="text" placeholder="Enter a todo..." />
+            <button id="addButton" >Add</button>
+        </div>
+
+        <ul class="todo-list" id="todoList">
+        </ul>
+
+        <button class="clear-all">Clear All</button>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
