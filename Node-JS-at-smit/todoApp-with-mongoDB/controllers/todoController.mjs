@@ -1,10 +1,8 @@
 import { successResponse, errorResponse } from "../utils/responses.mjs";
-import { client } from "../config/db.mjs"
+import { client } from "../config/db.mjs";
 import { ObjectId } from "mongodb";
 
-
-const db = client.db("todoDB");
-const col = db.collection('tasks');
+const todoCollection = client.db("todoDB").collection("tasks");
 
 export const createTodo = async (req, res) => {
   const { title } = req.body;
@@ -15,22 +13,24 @@ export const createTodo = async (req, res) => {
       .json(errorResponse("Title is required and must be a non-empty string"));
   }
   try {
-    const insertTask = await col.insertOne({
+    const insertTask = await todoCollection.insertOne({
       title,
     });
 
-    res.status(201).json(successResponse("Todo created successfully", insertTask));
+    res
+      .status(201)
+      .json(successResponse("Todo created successfully", insertTask));
   } catch (err) {
     console.error("❌ Failed to insert task:", err);
-    res.status(500).json(errorResponse("Something went wrong while creating todo"));
+    res
+      .status(500)
+      .json(errorResponse("Something went wrong while creating todo"));
   }
-
 };
 
 export const getTodos = async (req, res) => {
-
-  const cursor = col.find({}).sort({ _id: -1 }).limit(100);
-  let todos = await cursor.toArray()
+  const cursor = todoCollection.find({}).sort({ _id: -1 }).limit(100);
+  let todos = await cursor.toArray();
 
   res.status(200).json(successResponse("Todo fetched successfully", todos));
 };
@@ -39,22 +39,24 @@ export const getSingleTodo = async (req, res) => {
   const { id } = req.params;
 
   if (!id) {
-    return res.status(400).json({ error: "ID missing" });
+    return res.status(400).json(errorResponse("ID missing"));
   }
 
   if (!ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "Invalid ID" });
+    return res.status(400).json(errorResponse("Invalid ID"));
   }
 
   try {
-    const todo = await col.findOne({ _id: new ObjectId(id) });
+    const todo = await todoCollection.findOne({ _id: new ObjectId(id) });
     if (!todo) {
-      return res.status(404).json({ error: "Todo not found" });
+      return res.status(404).json(errorResponse("Todo not found"));
     }
-    return res.status(200).json(successResponse("Todo fetched successfully", todo));
+    return res
+      .status(200)
+      .json(successResponse("Todo fetched successfully", todo));
   } catch (err) {
     console.error("getSingleTodo error:", err);
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json(errorResponse("Server error"));
   }
 };
 
@@ -82,7 +84,7 @@ export const updateTodo = async (req, res) => {
   }
 
   try {
-    const insertResponse = await col.updateOne(
+    const insertResponse = await todoCollection.updateOne(
       { _id: new ObjectId(id) },
       { $set: updateFields }
     );
@@ -94,10 +96,9 @@ export const updateTodo = async (req, res) => {
     return res.status(200).json(successResponse("Todo updated successfully"));
   } catch (err) {
     console.error("updateTodo error:", err);
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json(errorResponse("Server error"));
   }
 };
-
 
 export const deleteTodo = async (req, res) => {
   const { id } = req.params;
@@ -108,7 +109,9 @@ export const deleteTodo = async (req, res) => {
   }
 
   try {
-    const deleteResponse = await col.deleteOne({ _id: new ObjectId(id) });
+    const deleteResponse = await todoCollection.deleteOne({
+      _id: new ObjectId(id),
+    });
 
     if (deleteResponse.deletedCount === 0) {
       return res.status(404).json(errorResponse("Todo not found"));
@@ -117,14 +120,14 @@ export const deleteTodo = async (req, res) => {
     return res.status(200).json(successResponse("Todo deleted successfully"));
   } catch (err) {
     console.error("deleteTodo error:", err);
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json(errorResponse("Server error"));
   }
 };
 
 export const deleteAllTodos = async (req, res) => {
   try {
-    const deleteResult = await col.deleteMany({});
-    
+    const deleteResult = await todoCollection.deleteMany({});
+
     return res.status(200).json(
       successResponse("All todos deleted successfully", {
         deletedCount: deleteResult.deletedCount,
@@ -132,7 +135,6 @@ export const deleteAllTodos = async (req, res) => {
     );
   } catch (err) {
     console.error("deleteAllTodos error:", err);
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json(errorResponse("Server error"));
   }
 };
-
