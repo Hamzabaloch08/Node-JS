@@ -3,8 +3,8 @@ import { MongoClient } from "mongodb";
 
 dotenv.config();
 
-// Replace the following with your Atlas connection string                                                                                                                                        
-const uri = process.env.MONGO_URI
+// Replace the following with your Atlas connection string
+const uri = process.env.MONGO_URI;
 
 if (!uri) {
   throw new Error("❌ MONGO_URI is missing in .env");
@@ -22,7 +22,6 @@ async function run() {
     process.exit(1);
   }
 }
-
 
 run().catch(console.dir);
 
