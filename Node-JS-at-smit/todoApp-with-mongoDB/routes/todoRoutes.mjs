@@ -2,7 +2,6 @@ import express from "express";
 import {
   createTodo,
   getTodos,
-  getSingleTodo,
   updateTodo,
   deleteTodo,
   deleteAllTodos,
@@ -11,7 +10,6 @@ import {
 export const todoRoutes = express.Router();
 
 todoRoutes.get("/todos", getTodos);
-todoRoutes.get("/todos/:id", getSingleTodo);
 todoRoutes.post("/todos", createTodo);
 todoRoutes.put("/todos/:id", updateTodo);
 todoRoutes.delete("/todos/:id", deleteTodo);

@@ -1,11 +1,17 @@
-export const successResponse = (message, data = null) => ({
+export const successResponse = (message, data) => {
+  const response = {
     success: true,
     message,
-    data
-});
+  };
 
-export const errorResponse = (message, data = null) => ({
-    success: false,
-    message,
-    data
+  if (data !== undefined) {
+    response.data = data;
+  }
+
+  return response;
+};
+
+export const errorResponse = (message) => ({
+  success: false,
+  message,
 });

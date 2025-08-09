@@ -12,16 +12,17 @@ export const createTodo = async (req, res) => {
       .status(400)
       .json(errorResponse("Title is required and must be a non-empty string"));
   }
+
   try {
     const insertTask = await todoCollection.insertOne({
       title,
+      email: req.user.email,
     });
 
     res
       .status(201)
       .json(successResponse("Todo created successfully", insertTask));
   } catch (err) {
-    console.error("❌ Failed to insert task:", err);
     res
       .status(500)
       .json(errorResponse("Something went wrong while creating todo"));
@@ -29,34 +30,16 @@ export const createTodo = async (req, res) => {
 };
 
 export const getTodos = async (req, res) => {
-  const cursor = todoCollection.find({}).sort({ _id: -1 }).limit(100);
-  let todos = await cursor.toArray();
-
-  res.status(200).json(successResponse("Todo fetched successfully", todos));
-};
-
-export const getSingleTodo = async (req, res) => {
-  const { id } = req.params;
-
-  if (!id) {
-    return res.status(400).json(errorResponse("ID missing"));
-  }
-
-  if (!ObjectId.isValid(id)) {
-    return res.status(400).json(errorResponse("Invalid ID"));
-  }
-
   try {
-    const todo = await todoCollection.findOne({ _id: new ObjectId(id) });
-    if (!todo) {
-      return res.status(404).json(errorResponse("Todo not found"));
-    }
-    return res
-      .status(200)
-      .json(successResponse("Todo fetched successfully", todo));
+    const cursor = todoCollection
+      .find({ email: req.user.email })
+      .sort({ _id: -1 })
+      .limit(100);
+
+    const todos = await cursor.toArray();
+    res.status(200).json(successResponse("Todo fetched successfully", todos));
   } catch (err) {
-    console.error("getSingleTodo error:", err);
-    return res.status(500).json(errorResponse("Server error"));
+    res.status(500).json(errorResponse("Failed to fetch todos"));
   }
 };
 
